@@ -1,0 +1,23 @@
+---
+- name: Install etcd
+  yum:
+    name: etcd
+    state: present
+  become: true
+
+- name: Update etcd /etc/etcd/etcd.conf file
+  template: src=etcd.service dest=/lib/systemd/system/
+  notify:
+    - restart etcd service
+  become: true
+
+- name: reload systemd
+  command: systemctl daemon-reload
+  become: true
+
+- name: restart etcd service
+  service:
+    name: etcd
+    state: restarted
+    enabled: yes
+  become: true

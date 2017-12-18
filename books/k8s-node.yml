@@ -3,8 +3,8 @@
 - include: ../facts/etcd.yml
 - include: ../facts/kubernetes.yml
 
-- name: deploy kubernetes minion
-  hosts: kubernetes-minion
+- name: deploy kubernetes nodes
+  hosts: kubernetes-node
   roles:
   - docker-with-thinpool
   - k8s-node

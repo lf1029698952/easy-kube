@@ -1,0 +1,14 @@
+[etcd-cluster]
+etcd-0
+etcd-1
+etcd-2
+
+[kubernetes:children]
+kubernetes-master
+kubernetes-node
+
+[kubernetes-master]
+k8s-master
+[kubernetes-node]
+k8s-node-1
+k8s-node-2
