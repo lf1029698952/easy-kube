@@ -1,0 +1,61 @@
+#生成集群所需要的证书
+---
+- name: Install wget
+  yum:
+    name: wget
+    state: present
+  become: true
+
+- name: wget cfssl_linux
+  shell: wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 && chmod +x cfssl_linux-amd64 && sudo mv cfssl_linux-amd64 /usr/bin/cfssl
+  become: true
+
+- name: wget cfssljson_linux
+  shell: wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 && chmod +x cfssljson_linux-amd64 && sudo mv cfssljson_linux-amd64 /usr/bin/cfssljson
+  become: true
+
+- name: wget cfssljson_linux
+  shell: wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64 && chmod +x cfssl-certinfo_linux-amd64 && sudo mv cfssl-certinfo_linux-amd64 /usr/bin/cfssl-certinfo
+  become: true
+
+- name: Create /root/ssl directory
+  file: path=/root/ssl state=directory mode=0755
+  become: true
+
+#vars变量中填写hosts节点的ip地址
+- name: copy certificate files, Create /root/ssl to generate certificates
+  vars:
+    k8s_master_ip: 192.168.0.100
+    etcd_ip: 192.168.0.101
+    eip_ip: 192.168.0.102
+  template: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: 'config.json', dest: '/root/ssl/config.json' }
+    - { src: 'ca-config.json', dest: '/root/ssl/ca-config.json' }
+    - { src: 'csr.json', dest: '/root/ssl/csr.json' }
+    - { src: 'ca-csr.json', dest: '/root/ssl/ca-csr.json' }
+    - { src: 'kubernetes-csr.json', dest: '/root/ssl/kubernetes-csr.json' }
+    - { src: 'admin-csr.json', dest: '/root/ssl/admin-csr.json' }
+    - { src: 'kube-proxy-csr.json', dest: '/root/ssl/kube-proxy-csr.json' }
+    - { src: 'get-certificate.sh', dest: '/root/ssl/get-certificate.sh' }
+    - { src: 'execute.sh', dest: '/root/execute.sh' }
+  become: true
+
+# 执行证书生成脚本
+- name: run get-certificate.sh
+  shell: sh /root/execute.sh
+  become: true
+
+#将远程主机上生成的证书拉到本地以便于分发
+- name: fetch certificate files from remote host
+  fetch: src=/root/ssl/{{ item }} dest=~/ssl/{{ item }} flat=yes
+  with_items:
+    - kubernetes-key.pem
+    - kubernetes.pem
+    - kube-proxy-key.pem
+    - kube-proxy.pem
+    - ca-key.pem
+    - ca.pem
+    - admin-key.pem
+    - admin.pem
+  become: true

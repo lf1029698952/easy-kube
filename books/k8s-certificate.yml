@@ -1,3 +1,4 @@
+#在master节点生成证书并分发至所需的node节点
 ---
 - include: ../facts/common.yml
 

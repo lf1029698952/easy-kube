@@ -1,0 +1,28 @@
+---
+- name: etcd facts
+  hosts: all
+  gather_facts: yes
+  run_once: true
+  tags: node-scale
+  tasks:
+    # 检查必须配置的变量是否已定义
+    - fail: msg="Variable '{{ item }}' is not defined"
+      when: item not in hostvars[inventory_hostname]
+      with_items:
+        - etcd_discovery_url # curl https://discovery.etcd.io/new\?size\=3
+
+    # 为可选配置的变量赋默认值
+    - set_fact: etcd_endpoint_port="2379"
+      when: etcd_endpoint_port is undefined
+
+    # 计算 etcd_endpoints
+    - name: "set fact: etcd_endpoints"
+      set_fact:
+        etcd_endpoints: "{{
+          groups['etcd-cluster']
+          | map('extract', hostvars, 'host_ip')
+          | map('regex_replace', '^(.*)$', 'https://\\1:'+etcd_endpoint_port )
+          | join(',')
+        }}"
+
+    - debug: msg="[VAR_DUMP] etcd_endpoints=>{{ etcd_endpoints }}"

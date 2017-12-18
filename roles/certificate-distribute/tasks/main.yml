@@ -1,0 +1,18 @@
+#将证书分发至各个需要的节点
+---
+- name: Create /etc/kubernetes/ssl directory
+  file: path=/etc/kubernetes/ssl state=directory mode=0755
+  become: true
+
+- name: copy certificate files to nodes
+  copy: src=~/ssl/{{ item }} dest=/etc/kubernetes/ssl/{{ item }}
+  with_items:
+    - kubernetes-key.pem
+    - kubernetes.pem
+    - kube-proxy-key.pem
+    - kube-proxy.pem
+    - ca-key.pem
+    - ca.pem
+    - admin-key.pem
+    - admin.pem
+  become: true

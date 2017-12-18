@@ -1,0 +1,11 @@
+---
+- name: common facts
+  hosts: all
+  gather_facts: yes
+  tags: node-scale
+  tasks:
+    - name: "set fact: host_ip"
+      set_fact:
+        #host_ip: "{{ hostvars[inventory_hostname]['ansible_'+service_nic]['ipv4']['address'] }}"
+        host_ip: "{{ ansible_default_ipv4.address }}"
+    - debug: msg="[VAR_DUMP] host_ip=>{{ host_ip }}"
