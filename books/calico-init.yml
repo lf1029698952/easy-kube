@@ -1,0 +1,9 @@
+---
+- include: ../facts/common.yml
+- include: ../facts/etcd.yml
+- include: ../facts/calico.yml
+
+- name: init calico
+  hosts: calico_init_node
+  roles:
+  - init_calico

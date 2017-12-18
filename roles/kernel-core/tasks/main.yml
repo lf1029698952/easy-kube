@@ -1,0 +1,23 @@
+#对生产环境的操作系统作内核参数调优，根据实际情况为准
+---
+- name: copy sysctl.conf file
+  template: src=sysctl.conf dest=/etc
+  become: true
+
+# sysctl -p 使系统内核参数设置生效
+- name: sysctl -p
+  command: sysctl -p
+  become: true
+
+- name: copy limits.conf file
+  template: src=limits.conf dest=/etc/security
+  become: true
+
+- name: copy ulimit.sh file
+  template: src=ulimit.sh dest=/root
+  become: true
+
+# 使文件限制参数临时生效，重启后永久生效
+- name: ulimit -SHn 102400
+  command: sh /root/ulimit.sh
+  become: true

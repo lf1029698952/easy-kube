@@ -1,0 +1,4 @@
+---
+- name: restart network
+  command: systemctl restart network
+  become: true

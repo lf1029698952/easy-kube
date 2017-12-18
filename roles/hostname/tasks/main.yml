@@ -1,0 +1,28 @@
+---
+#
+# common centos 7 server
+#
+# vars:
+#    hostname - if undefined, use hostname in inventory
+#
+
+- name: set hostname by your config file
+  hostname:
+    name: "{{ hostname }}"
+  #shell: hostnamectl set-hostname {{ hostname }}
+  when: hostname is defined
+  become: true
+
+- name: set hostname by inventory_hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+  #shell: hostnamectl set-hostname {{ inventory_hostname }}
+  when: hostname is undefined
+  become: true
+
+- name: Disable hostname reset
+  lineinfile:
+    dest: /etc/cloud/cloud.cfg
+    regexp: '_hostname$'
+    state: absent
+  become: true

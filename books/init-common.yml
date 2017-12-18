@@ -1,0 +1,8 @@
+#初始化系统环境，如设置hostname，开启ip_forward转发，优化生产环境的系统内核参数，此处只是建议配置，可根据实际情况修改
+---
+- hosts: kubernetes
+  gather_facts: yes
+  roles:
+    - hostname
+    - init-common
+    - kernel-core

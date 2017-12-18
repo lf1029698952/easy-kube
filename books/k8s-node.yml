@@ -1,0 +1,16 @@
+---
+- include: ../facts/common.yml
+- include: ../facts/etcd.yml
+- include: ../facts/kubernetes.yml
+
+- name: deploy kubernetes minion
+  hosts: kubernetes-minion
+  roles:
+  - docker-with-thinpool
+  - k8s-node
+  tags: node-scale
+
+- name: run calico network policy
+  hosts: kubernetes-master
+  roles:
+  - calico

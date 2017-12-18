@@ -1,0 +1,100 @@
+---
+#初始化dns服务器
+- name: Copy resolv.conf file
+  template: src=resolv.conf dest=/etc/
+  become: true
+  when: resolv_nameservers is defined
+
+#初始化yum源，如阿里云镜像源
+- name: Get yum repo script
+  get_url:
+    url: http://mirrors.aliyun.com/repo/repo-install.sh
+    dest: ~/repo-install.sh
+  register: repo
+  become: true
+
+- name: Install yum repo
+  shell: sh ~/repo-install.sh
+  when: repo.changed
+  become: true
+
+#拷贝初始化的hosts文件
+- name: Copy default hosts file
+  copy: src=hosts dest=/etc/
+  become: true
+  ignore_errors: True
+
+#创建.ssh授权文件
+- name: Create ~/.ssh directory
+  file: path=~/.ssh state=directory mode=0700
+
+#在authorized_keys文件里写入需要ssh授权用户的key
+- name: Copy default authorized_keys file
+  copy: src=authorized_keys dest=~/.ssh/ mode=0600
+
+#禁用SELinux
+- name: Disable selinux
+  selinux: state=disabled
+  become: true
+
+#禁用firewalld防火墙
+- name: stop firewalld
+  service: name=firewalld state=stopped
+  ignore_errors: True
+  become: true
+
+#安装pstree
+- name: Install psmisc
+  yum:
+    name: psmisc
+    state: present
+  become: true
+
+#设置时区
+- name: Set time zone
+  timezone:
+    name: Asia/Shanghai
+  become: true
+
+#打开ip_forward转发，否则容器数据包无法出宿主机
+- name: Open IP Forward
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: true
+
+- name: Set pid_max value
+  sysctl:
+    name: kernel.pid_max
+    value: 196608
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: true
+
+#静态网络配置,网络特殊需求时配置
+#- name: NetworkManager servie exist
+#  #shell: systemctl stop NetworkManager
+#  stat: path=/usr/lib/systemd/system/NetworkManager.service
+#  register: NetworkManager_service_exist
+#  become: true
+#  #ignore_errors: True
+#
+#- name: Stop NetworkManager service
+#  service:
+#    name: NetworkManager
+#    state: stopped
+#    enabled: no
+#  become: true
+#  #when: NetworkManager_service_exist.rc == 0
+#  when: NetworkManager_service_exist.stat.exists
+#
+#- name: from dhcp to static
+#  template: src=ifcfg-eth0 dest=/etc/sysconfig/network-scripts/ifcfg-{{ service_nic }}
+#  notify:
+#    - restart network
+#  become: true
+#  tags: static-network

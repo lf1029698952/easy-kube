@@ -1,0 +1,9 @@
+---
+- include: ../facts/common.yml
+- include: ../facts/etcd.yml
+- include: ../facts/kubernetes.yml
+
+- name: deploy kubernetes master
+  hosts: kubernetes-master
+  roles:
+  - k8s-master

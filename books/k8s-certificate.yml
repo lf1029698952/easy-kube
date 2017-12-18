@@ -1,0 +1,12 @@
+---
+- include: ../facts/common.yml
+
+- name: make kubernetes certificates and fetch
+  hosts: kubernetes-master
+  roles:
+  - k8s-certificate
+
+- name: distribute kubernetes certificates
+  hosts: all
+  roles:
+  - certificate-distribute
