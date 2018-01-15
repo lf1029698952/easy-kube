@@ -1,0 +1,15 @@
+---
+- name: Copy flannel yaml file
+  template: src=flannel-vxlan.yml dest=/root/
+  become: true
+
+- name: Flannel already run
+  shell: kubectl get pods --namespace=kube-system|grep flannel
+  register: flannel_run_result
+  ignore_errors: True
+  become: true
+
+- name: Run flannel
+  command: kubectl create -f /root/flannel-vxlan.yml
+  when: flannel_run_result.stdout == ""
+  become: true
