@@ -1,0 +1,60 @@
+---
+- name: Install kube-node
+  yum:
+    name: kube-node
+    state: present
+  become: true
+
+- name: Update k8s node kubelet.service file`
+  template: src=kubelet.service dest=/lib/systemd/system/
+  notify: 
+    - restart kubelet 
+  become: true
+
+- name: Update k8s node kube-proxy.service file
+  template: src=kube-proxy.service dest=/lib/systemd/system/
+  notify: 
+    - restart kube-proxy
+  become: true
+
+- name: Copy k8s kubeconfig to node
+  copy: src=~/ssl/{{ item }} dest=/etc/kubernetes/{{ item }}
+  with_items:
+    - bootstrap.kubeconfig
+    - kube-proxy.kubeconfig
+  become: true
+
+- name: start kubelet service
+  service:
+    name: kubelet
+    state: started
+    enabled: yes
+  become: true
+
+- name: start kube-proxy service
+  service:
+    name: kube-proxy
+    state: started
+    enabled: yes
+  become: true
+
+#配置calico网络
+#- name: Update k8s node /etc/cni/net.d/10-calico.conf file
+#  template: src=10-calico.conf dest=/etc/cni/net.d/
+#  notify:
+#    - restart kubelet
+#    - restart kube-proxy
+#  become: true
+
+#- name: Pull calico docker image
+#  shell: docker pull quay.io/calico/node:latest && docker tag quay.io/calico/node calico/node
+#  become: true
+
+#拉取并重命名google_containers/pause镜像
+- name: Pull pause docker image 
+  shell: docker pull quay.io/google_containers/pause-amd64:3.0 && docker tag quay.io/google_containers/pause-amd64:3.0 gcr.io/google_containers/pause-amd64:3.0
+  become: true
+
+- name: iptables forward accept
+  command: iptables -I FORWARD -s 0.0.0.0/0 -j ACCEPT
+  become: true

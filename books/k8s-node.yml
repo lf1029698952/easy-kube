@@ -6,11 +6,11 @@
 - name: deploy kubernetes nodes
   hosts: kubernetes-node
   roles:
-  - docker-with-thinpool
+  - docker
   - k8s-node
   tags: node-scale
 
-- name: run calico network policy
-  hosts: kubernetes-master
-  roles:
-  - calico
+#- name: run calico network policy
+#  hosts: kubernetes-master
+#  roles:
+#  - calico

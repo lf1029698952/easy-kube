@@ -1,0 +1,36 @@
+---
+- name: install Docker 17.11
+  yum:
+    name: docker-ce
+    state: present
+  become: true
+
+# 加载overlayfs内核模块 modprobe  overlay
+- name: reload systemd
+  shell: modprobe overlay && echo "overlay" > /etc/modules-load.d/overlay.conf
+  become: true
+
+- name: change docker service config
+  template: src=docker.service.j2 dest=/lib/systemd/system/docker.service
+  notify:
+    - reload systemctl
+    - restart docker
+  become: true
+
+- name: 创建docker配置目录
+  file: name=/etc/docker state=directory
+  become: true
+
+- name: change docker config
+  template: src=daemon.json dest=/etc/docker/
+  notify:
+    - reload systemctl
+    - restart docker
+  become: true
+
+- name: start docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  become: true
