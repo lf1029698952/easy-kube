@@ -1,0 +1,75 @@
+---
+- name: Install kube-master
+  yum:
+    name: kube-master
+    state: present
+  become: true
+
+- name: Create /etc/kubernetes/ssl directory
+  file: path=/etc/kubernetes/ssl state=directory mode=0775
+  become: true
+
+- name: Update k8s master /etc/kubernetes/config file
+  template: src=token.csv dest=/etc/kubernetes/
+  become: true
+
+- name: Copy k8s kubeconfig shell to get kubeconfig
+  template: src=kubeconfig.sh dest=/etc/kubernetes/
+  become: true
+
+- name: Update k8s master /var/lib/systemd/system/apiserver service
+  template: src=kube-apiserver.service dest=/lib/systemd/system/
+  notify:
+    - restart kube-apiserver
+  become: true
+
+- name: Update k8s master /var/lib/systemd/system/kube-controller-manager file
+  template: src=kube-controller-manager.service dest=/lib/systemd/system/
+  notify:
+    - restart kube-controller-manager
+  become: true
+
+- name: Update k8s master /var/lib/systemd/system/kube-scheduler file
+  template: src=kube-scheduler.service dest=/lib/systemd/system/
+  notify:
+    - restart kube-controller-manager
+  become: true
+
+- name: reload systemd
+  command: systemctl daemon-reload
+  become: true
+
+
+- name: start kube-apiserver service
+  service:
+    name: kube-apiserver
+    state: started
+    enabled: yes
+  become: true
+
+- name: start kube-controller-manager service
+  service:
+    name: kube-controller-manager
+    state: started
+    enabled: yes
+  become: true
+
+- name: start kube-scheduler service
+  service:
+    name: kube-scheduler
+    state: started
+    enabled: yes
+  become: true
+
+  #执行kubeconfig生成脚本
+- name: run get-kubeconfig.sh
+  shell: sh /etc/kubernetes/kubeconfig.sh
+  become: true
+
+#将远程主机上生成的kubeconfig拉到本地以便于分发
+- name: fetch certificate files from remote host
+  fetch: src=/etc/kubernetes/{{ item }} dest=~/ssl/{{ item }} flat=yes
+  with_items:
+    - bootstrap.kubeconfig
+    - kube-proxy.kubeconfig
+  become: true
