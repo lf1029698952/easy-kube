@@ -1,0 +1,74 @@
+ansible_ssh_common_args: '-F ./environments/cq.test/ssh_config'
+
+# service bind network
+service_nic: eth0
+
+resolv_nameservers:
+    - 192.168.0.1
+
+############
+# etcd
+############
+# need when create etcd cluster
+# curl https://discovery.etcd.io/new\?size\=3
+etcd_discovery_url: https://discovery.etcd.io/da8a96bf79c4369ee73495fbecfcacb6
+
+# default etcd port 2379
+# etcd_endpoint_port: "2379"
+
+
+############
+# kubernetes
+############
+# kubernetes api server地址,默认值为keepalived vip地址，schema为https，端口为6443
+# kube_api_server: https://127.0.0.1:6443
+# kubernetes master数量，默认为hosts文件中kubernetes-master group中主机数量
+# master_count: 2
+BOOTSTRAP_TOKEN: 8d7403715d6c00462b051f18d70a8b3b
+MASTER_IP: 192.168.7.251
+
+
+
+############
+# keepalived
+############
+vip: 192.168.7.251
+virtual_router_id: 7251
+
+# api-server 实际成员地址端口
+LB_EP1: 192.168.0.1:6443
+LB_EP2: 192.168.0.2:6443
+MASTER_IP: 192.168.7.251
+MASTER_PORT: 8443
+
+
+############
+# zabbix
+############
+# # zabbix server 地址
+zabbix_server: server.zabbix.xxx.com
+
+
+############
+# calico
+############
+#as_number: 64513
+# # 路由反射器地址
+# rr1_addr: 172.26.16.112
+# rr2_addr: 172.26.16.88
+# # 新建网段
+cidr_network: 10.24.0.0/16
+
+
+############
+# flannel
+############
+flannel_network: 10.24.0.0/16
+
+############
+# docker with thin pool
+############
+# 用来创建pv的磁盘
+#lvm_disk: /dev/xvdb
+# 分配给根分区的磁盘大小，不要设置为0
+#lvm_root_size: 1G
