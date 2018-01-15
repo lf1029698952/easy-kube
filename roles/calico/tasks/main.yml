@@ -1,0 +1,8 @@
+---
+- name: Copy calico yaml file
+  template: src=calico.yml dest=/root/
+  become: true
+
+- name: Run calico
+  command: kubectl apply -f /root/calico.yml
+  become: true
