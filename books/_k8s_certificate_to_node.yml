@@ -1,0 +1,7 @@
+---
+- include: ../facts/common.yml
+
+- name: distribute kubernetes certificates
+  hosts: kubernetes-minion
+  roles:
+  - certificate-distribute

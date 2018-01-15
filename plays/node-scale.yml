@@ -1,0 +1,5 @@
+---
+- include: ../books/_init_common.yml
+#- include: ../books/_zabbix.yml
+- include: ../books/_k8s_certificate_to_node.yml
+- include: ../books/_k8s_node.yml
