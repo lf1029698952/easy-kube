@@ -1,0 +1,32 @@
+---
+- name: kubernetes facts
+  hosts: kubernetes
+  gather_facts: yes
+  run_once: true
+  tags: node-scale
+  tasks:
+    # 为可选配置的变量赋默认值
+    - set_fact: master_count="{{ groups['kubernetes-master'] | length }}"
+      when: master_count is undefined
+
+#    - set_fact: admin_password="admin"
+#      when: admin_password is undefined
+#
+#    - set_fact: work_password="work"
+#      when: work_password is undefined
+
+    # 计算 kube_api_server
+    - name: "set value for kube_api_server"
+      set_fact:
+        kube_api_server: "https://{{ vip }}:6443"
+      when: vip is defined
+    - name: "set value for kube_api_server"
+      set_fact:
+        kube_api_server: "https://{{ hostvars[groups['kubernetes-master'][0]]['host_ip'] }}:6443"
+      when: vip is undefined
+
+    # 检查必须配置的变量是否已定义
+    - fail: msg="kube_api_server is not defined"
+      when: kube_api_server is undefined
+
+    - debug: msg="[VAR_DUMP] kube_api_server=>{{ kube_api_server }}"
