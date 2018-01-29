@@ -1,5 +1,5 @@
 ---
-- name: install Docker 17.11
+- name: install Docker 17.12
   yum:
     name: docker-ce
     state: present
