@@ -1,0 +1,31 @@
+---
+- name: calico facts
+  hosts: all
+  gather_facts: yes
+  run_once: true
+  tasks:
+    # 检查必须配置的变量是否已定义
+    # - fail: msg="Variable '{{ item }}' is not defined"
+    #   when: item not in hostvars[inventory_hostname]
+    #   with_items:
+    #     - as_number
+
+    - set_fact: new_network="10.24.0.0/16"
+      when: new_network is undefined
+
+    - set_fact: as_number="65524"
+      when: as_number is undefined
+
+    # 为可选配置的变量赋默认值
+    - name: "set fact rr1_addr"
+      set_fact:
+        rr1_addr: "{{ hostvars[groups['calico-routereflector'][0]]['host_ip'] }}"
+      when: rr1_addr is undefined
+
+    # 计算 rr2_addr
+    - name: "set fact rr2_addr"
+      set_fact:
+        rr2_addr: "{{ hostvars[groups['calico-routereflector'][1]]['host_ip'] }}"
+      when: rr2_addr is undefined
+
+    - debug: msg="[VAR_DUMP] rr1_addr=>{{ rr1_addr }} rr2_addr=>{{ rr2_addr }}"
