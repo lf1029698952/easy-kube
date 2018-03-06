@@ -43,6 +43,8 @@ kube-node-v1.7.11
 docker-ce v17.12  
 └── docker-ce-17.12.0.ce-1.el7.centos.x86_64.rpm  
 
+rpm包共享地址：  
+链接:https://pan.baidu.com/s/1uoOTzN9B0_w_Yoe435iJcA  密码:i1nf  
 
 ### 第一步：初始化安装环境
 很多人在安装过程中会遇到这样那样的安装问题，有不少是因为环境问题造成的，所以在安装前请先初始化安装环境，并请确认是否符合官方的版本要求。
@@ -108,13 +110,14 @@ kubeconfig ------ admin权限，管理员远程操作使用
 在node节点上使用yum安装docker-ce，我们这里使用了官方推荐的overlay2存储驱动启动，启动参数建议都放在/etc/docker/daemon.json文件里。
 
 CentOS系统在/etc/docker/daemon.json文件里写入：
-
+```
 {
   "storage-driver": "overlay2",
- "storage-opts": [
+  "storage-opts": [
     "overlay2.override_kernel_check=true"
- ]
+  ]
 }
+```
 devicemapper direct-lvm映射块方式启动：
 
 docker-ce 17.06版本后，支持对lvm存储的自动管理。
@@ -123,17 +126,19 @@ docker-ce 17.06版本后，支持对lvm存储的自动管理。
 
 在/etc/docker/daemon.json文件里写入：
 
+```
 {
   "storage-driver": "devicemapper",
- "storage-opts": [
- "dm.directlvm_device=/dev/vda5",
- "dm.thinp_percent=95",
- "dm.thinp_metapercent=1",
- "dm.thinp_autoextend_threshold=80",
- "dm.thinp_autoextend_percent=20",
- "dm.directlvm_device_force=true"
+  "storage-opts": [
+  "dm.directlvm_device=/dev/vda5",
+  "dm.thinp_percent=95",
+  "dm.thinp_metapercent=1",
+  "dm.thinp_autoextend_threshold=80",
+  "dm.thinp_autoextend_percent=20",
+  "dm.directlvm_device_force=true"
  ]
 }
+```
 overlayfs是真正的分层存储，空间利用率高，基于文件的读写，效率高，device mapper是块设备存储，大量内容读写比较有优势。
 
 docker存储驱动相关文档：https://docs.docker.com/engine/userguide/storagedriver/
@@ -235,7 +240,14 @@ search default.svc.cluster.local. svc.cluster.local. cluster.local.
 
 ......
 
-### 第十步：部署EFK日志收集组件
+### 第十步：部署Prometheus监控组件
+Prometheus监控的部署稍后上传......
+
+### 第十一步：部署coredns、ingress等组件
+相关组件部署文档已放入addones目录下，相关gcr.io的镜像将上传至registry.cn-north-1.huaweicloud.com地址上。
+使用时注意修改相关的路径配置
+
+### 第十二步：部署EFK日志收集组件
 ......
 
 ......
