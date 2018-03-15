@@ -7,8 +7,12 @@ etcd-2
 kubernetes-master
 kubernetes-node
 
+[kubernetes-master-certfile]
+k8s-master-1
+
 [kubernetes-master]
-k8s-master
+k8s-master-1
+k8s-master-2
 [kubernetes-node]
 k8s-node-1
 k8s-node-2

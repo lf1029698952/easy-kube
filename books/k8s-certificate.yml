@@ -3,7 +3,7 @@
 - include: ../facts/common.yml
 
 - name: make kubernetes certificates and fetch
-  hosts: kubernetes-master
+  hosts: kubernetes-master-certfile
   roles:
   - k8s-certificate
 
