@@ -60,19 +60,20 @@ rpm包共享地址：
 
 生成的 CA 证书和秘钥文件如下:
 
-ca-key.pem
-ca.pem
-kubernetes-key.pem
-kubernetes.pem
-kube-proxy.pem
-kube-proxy-key.pem
-admin.pem
-admin-key.pem
+ca-key.pem  
+ca.pem  
+kubernetes-key.pem  
+kubernetes.pem  
+kube-proxy.pem  
+kube-proxy-key.pem  
+admin.pem  
+admin-key.pem  
+
 使用证书的组件如下:
 
-etcd:使用 ca.pem、kubernetes-key.pem、kubernetes.pem;
-kube-apiserver:使用 ca.pem、kubernetes-key.pem、kubernetes.pem; kubelet:使用 ca.pem;
-kube-proxy:使用 ca.pem、kube-proxy-key.pem、kube-proxy.pem; kubectl:使用 ca.pem、admin-key.pem、admin.pem;
+etcd:使用 ca.pem、kubernetes-key.pem、kubernetes.pem;  
+kube-apiserver:使用 ca.pem、kubernetes-key.pem、kubernetes.pem; kubelet:使用 ca.pem;  
+kube-proxy:使用 ca.pem、kube-proxy-key.pem、kube-proxy.pem; kubectl:使用 ca.pem、admin-key.pem、admin.pem;  
 kube-controller 、 kube-scheduler 当前需要和 kube-apiserver 部署在 同一台机器上且使用非安全端口通信，故不需要证书。
 制作证书并分发到每个节点就可以了。
 
