@@ -5,6 +5,13 @@
     state: present
   become: true
 
+#安装kube-proxy依赖conntrack
+- name: Install conntrack
+  yum:
+    name: conntrack
+    state: present
+  become: true
+
 - name: Update k8s node kubelet.service file`
   template: src=kubelet.service dest=/lib/systemd/system/
   notify: 
