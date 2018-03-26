@@ -3,7 +3,23 @@ Kubernetes install guide
 
 Kubernetes v1.7.11
 
-docker v17.12.0.ce
+Docker v17.12.0-ce
+
+CentOS 7.4 (3.10.0-693.11.1)
+
+###【对环境选择的说明】
+
+CentOS 7.4增加了对overlay存储驱动的支持，  
+
+Docker 17.12-ce也同样完善了对overlay存储驱动的支持，  
+
+为什么选择overlay存储驱动，因为在CentOS系统上常见的存储驱动有device mapper和overlay，在生产环境中大规模使用device mapper会有 “error initializing graphdriver: devmapper”、“device is busy”等错误，这是由于存储驱动的支持性问题造成的，所以在新版本中选用了官方更为推荐的overlay的方式，overlay存储驱动又有两个版本：overlay和overlay2，overlay版本在使用过程中有inode耗尽的问题，所以推荐使用overlay2。
+
+![docker-fsdriver](images/docker-fsdriver.png)
+
+参考链接：https://docs.docker.com/storage/storagedriver/select-storage-driver/  
+
+Kubernetes版本根据自己业务情况选择即可，推荐使用1.6以上版本，rbac更完善一些，1.9版本把workload api升级到v1，后续变动肯定会更小，根据需求情况使用其稳定版本即可。  
 
 Kubernetes集群的确是部署最复杂的集群之一，其难点又在于网络组件部分及其他各个组件的选型。
 
