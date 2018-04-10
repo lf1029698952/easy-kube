@@ -9,9 +9,9 @@ CentOS 7.4 (3.10.0-693.11.1)
 
 ### 【对环境选择的说明】
 
-CentOS 7.4增加了对overlay存储驱动的支持，  
+CentOS 7.4完善了对overlay存储驱动的支持（[参考链接](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/7.4_release_notes/technology_previews_file_systems)）  
 
-Docker 17.12-ce也同样完善了对overlay存储驱动的支持，  
+Docker 17.12-ce也同样完善了对overlay存储驱动的支持（[参考链接](https://docs.docker.com/release-notes/docker-ce/)），  
 
 为什么选择overlay存储驱动，因为在CentOS系统上常见的存储驱动有device mapper和overlay，在生产环境中大规模使用device mapper会有 “error initializing graphdriver: devmapper”、“device is busy”等错误，这是由于存储驱动的支持性问题造成的，所以在新版本中选用了官方更为推荐的overlay的方式，overlay存储驱动又有两个版本：overlay和overlay2，overlay版本在使用过程中有inode耗尽的问题，所以推荐使用overlay2。
 
