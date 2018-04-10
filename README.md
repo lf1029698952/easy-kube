@@ -7,6 +7,9 @@ Docker v17.12.0-ce
 
 CentOS 7.4 (3.10.0-693.11.1)
 
+安装使用说明详见：  
+安装前配置说明： [before-config](docs/before-config.md)  
+
 ### 【对环境选择的说明】
 
 CentOS 7.4完善了对overlay存储驱动的支持（[参考链接](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/7.4_release_notes/technology_previews_file_systems)）  

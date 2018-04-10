@@ -1,4 +1,4 @@
-ansible_ssh_common_args: '-F ./environments/cq.test/ssh_config'
+ansible_ssh_common_args: '-F ./environments/kubernetes/ssh_config'
 
 # service bind network
 service_nic: eth0
