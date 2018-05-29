@@ -6,17 +6,17 @@
   when: resolv_nameservers is defined
 
 #初始化yum源，如阿里云镜像源
-- name: Get yum repo script
-  get_url:
-    url: http://mirrors.aliyun.com/repo/repo-install.sh
-    dest: ~/repo-install.sh
-  register: repo
-  become: true
-
-- name: Install yum repo
-  shell: sh ~/repo-install.sh
-  when: repo.changed
-  become: true
+#- name: Get yum repo script
+#  get_url:
+#    url: http://mirrors.aliyun.com/repo/repo-install.sh
+#    dest: ~/repo-install.sh
+#  register: repo
+#  become: true
+#
+#- name: Install yum repo
+#  shell: sh ~/repo-install.sh
+#  when: repo.changed
+#  become: true
 
 #拷贝初始化的hosts文件
 - name: Copy default hosts file
