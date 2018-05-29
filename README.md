@@ -272,6 +272,10 @@ Prometheus监控的部署稍后上传......
 
 ......
 
+### 关于版本升级，该脚本适用于1.6~1.9各版本，其中细微区别在于kube-apiserver与kubelet组件中的参数略有不同，有些参数标识可能已废弃
+如1.8版本以上需要关闭swap分区，一些实验性特性改为标准特性等。  
+关于参数配置说明，具体可见：[https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/)
+
 
 
 
