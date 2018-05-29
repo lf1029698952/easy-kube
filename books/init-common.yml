@@ -4,5 +4,5 @@
   gather_facts: yes
   roles:
     - hostname
-    - init-common
+    - init-hosts
     - kernel-core
