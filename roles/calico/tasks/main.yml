@@ -1,8 +1,17 @@
+#网络模块部分建议手动修改calico配置文件后手动部署
 ---
+- name: Copy calico yaml file
+  template: src=calico-rbac.yml dest=/root/
+  become: true
+
+#- name: Run calico
+#  command: kubectl apply -f /root/calico-rbac.yml
+#  become: true
+
 - name: Copy calico yaml file
   template: src=calico.yml dest=/root/
   become: true
 
-- name: Run calico
-  command: kubectl apply -f /root/calico.yml
-  become: true
+#- name: Run calico
+#  command: kubectl apply -f /root/calico.yml
+#  become: true

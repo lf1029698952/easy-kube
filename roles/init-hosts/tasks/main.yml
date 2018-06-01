@@ -1,9 +1,9 @@
 ---
 #初始化dns服务器
-- name: Copy resolv.conf file
-  template: src=resolv.conf dest=/etc/
-  become: true
-  when: resolv_nameservers is defined
+#- name: Copy resolv.conf file
+#  template: src=resolv.conf dest=/etc/
+#  become: true
+#  when: resolv_nameservers is defined
 
 #初始化yum源，如阿里云镜像源
 #- name: Get yum repo script
