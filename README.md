@@ -1,22 +1,24 @@
 # easy-kube
 Kubernetes install guide
 
-Kubernetes v1.7.11
+Kubernetes v1.11.4
 
-Docker v17.12.0-ce
+Docker v18.06.1-ce
 
-CentOS 7.4 (3.10.0-693.11.1)
+CentOS 7.5 (3.10.0-862.2.3)
 
 安装使用说明详见：  
 安装前配置说明： [before-config](docs/before-config.md)  
 
 ### 【对环境选择的说明】
 
-CentOS 7.4完善了对overlay存储驱动的支持（[参考链接](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/7.4_release_notes/technology_previews_file_systems)）  
+CentOS 7.5完善了对overlay存储驱动的支持（[参考链接](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/7.4_release_notes/technology_previews_file_systems)）  
 
-Docker 17.12-ce也同样完善了对overlay存储驱动的支持（[参考链接](https://docs.docker.com/release-notes/docker-ce/)），  
+Docker 18.06.1-ce也同样完善了对overlay存储驱动的支持（[参考链接](https://docs.docker.com/release-notes/docker-ce/)），  
 
-为什么选择overlay存储驱动，因为在CentOS系统上常见的存储驱动有device mapper和overlay，在生产环境中大规模使用device mapper会有 “error initializing graphdriver: devmapper”、“device is busy”等错误，这是由于存储驱动的支持性问题造成的，所以在新版本中选用了官方更为推荐的overlay的方式，overlay存储驱动又有两个版本：overlay和overlay2，overlay版本在使用过程中有inode耗尽的问题，所以推荐使用overlay2。
+在CentOS 7.5对内核更新支持完善后，CentOS上docker的主流存储驱动有两种：devicemapper与overlay2，在安装时可以进行选择，devicemapper是以块设备形式直接挂载使用，overlay2是文件形式，两者区别可见下图。  
+
+需要指出的是，在生产环境使用时，overlay2默认不会限制容器rootfs的大小，需要对文件系统进行pquota格式化，devicemapper会默认限制容器rootfs为10G，请根据需要进行选择配置。  
 
 ![docker-fsdriver](images/docker-fsdriver.png)
 
@@ -28,14 +30,14 @@ Kubernetes集群的确是部署最复杂的集群之一，其难点又在于网�
 
 使用二进制方式用于生产环境的部署，已将所有二进制文件打包为rpm包，如下：
 
-etcd-v3.2.11  
+etcd-v3.3.10  
 ├── etcd  
 │
 └── etcdctl  
     ├── etcd.service  
     └── etcd.sh  
     
-kube-master-v1.7.11  
+kube-master-v1.11.4  
 ├── kube-apiserver  
 │
 ├── kube-controller-manager  
@@ -48,7 +50,7 @@ kube-master-v1.7.11
     ├── kube-scheduler.service  
     └── kube-master.sh  
     
-kube-node-v1.7.11  
+kube-node-v1.11.4  
 ├── kubelet  
 │
 ├── kube-proxy  
@@ -59,8 +61,8 @@ kube-node-v1.7.11
     └── kube-node.sh  
 
 
-docker-ce v17.12  
-└── docker-ce-17.12.0.ce-1.el7.centos.x86_64.rpm  
+docker-ce v18.06.1
+└── docker-ce-18.06.1.ce-1.el7.centos.x86_64.rpm  
 
 rpm包共享地址：  
 链接:https://pan.baidu.com/s/1uoOTzN9B0_w_Yoe435iJcA  密码:i1nf  
@@ -261,7 +263,9 @@ search default.svc.cluster.local. svc.cluster.local. cluster.local.
 ......
 
 ### 第十步：部署Prometheus监控组件
-Prometheus监控的部署稍后上传......
+推荐使用helm直接部署安装Prometheus监控，细微的配置稍后根据需要再调整  
+helm install coreos/prometheus-operator
+helm install coreos/kube-prometheus
 
 ### 第十一步：部署coredns、ingress等组件
 相关组件部署文档已放入addones目录下，相关gcr.io的镜像将上传至registry.cn-north-1.huaweicloud.com地址上。
@@ -272,7 +276,7 @@ Prometheus监控的部署稍后上传......
 
 ......
 
-### 关于版本升级，该脚本适用于1.6~1.9各版本，其中细微区别在于kube-apiserver与kubelet组件中的参数略有不同，有些参数标识可能已废弃
+### 关于版本升级，该脚本适用于1.6~1.13各版本，其中细微区别在于kube-apiserver与kubelet组件中的参数略有不同，有些参数标识可能已废弃
 如1.8版本以上需要关闭swap分区，一些实验性特性改为标准特性等。  
 关于参数配置说明，具体可见：[https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/)
 
