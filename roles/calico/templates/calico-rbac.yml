@@ -1,5 +1,5 @@
-# Calico Version v2.6.3
-# https://docs.projectcalico.org/v2.6/releases#v2.6.3
+# Calico Version v3.3.1
+# https://docs.projectcalico.org/v3.3/releases#v3.3.1
 
 ---
 
@@ -16,6 +16,14 @@ rules:
       - namespaces
       - networkpolicies
       - nodes
+      - serviceaccounts
+    verbs:
+      - watch
+      - list
+  - apiGroups:
+    - networking.k8s.io
+    resources:
+      - networkpolicies
     verbs:
       - watch
       - list
@@ -44,6 +52,7 @@ rules:
     resources:
       - pods
       - nodes
+      - namespaces
     verbs:
       - get
 
