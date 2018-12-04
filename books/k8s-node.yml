@@ -6,7 +6,7 @@
 - name: deploy kubernetes nodes
   hosts: kubernetes-node
   roles:
-  - docker
+  - docker-overlay  #这里的两种docker安装方式二选一
   - k8s-node
   tags: node-scale
 

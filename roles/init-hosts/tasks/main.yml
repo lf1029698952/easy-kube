@@ -1,10 +1,4 @@
 ---
-#初始化dns服务器
-#- name: Copy resolv.conf file
-#  template: src=resolv.conf dest=/etc/
-#  become: true
-#  when: resolv_nameservers is defined
-
 #初始化yum源，如阿里云镜像源
 #- name: Get yum repo script
 #  get_url:
@@ -18,13 +12,31 @@
 #  when: repo.changed
 #  become: true
 
-#拷贝初始化的hosts文件
-- name: Copy default hosts file
-  copy: src=hosts dest=/etc/
+- name: yum makecache
+  command: yum makecache
   become: true
-  ignore_errors: True
+
+- name: Install vim
+  yum:
+    name: vim
+    state: present
+  become: true
 
 #创建.ssh授权文件
+- name: Create ~/.ssh directory
+  file: path=~/.ssh state=directory mode=0700
+
+#配置ntp服务器保持服务器时间同步一致
+- name: Install ntp
+  yum:
+    name: ntp
+    state: present
+  become: true
+
+- name: Set crontab job
+  cron: name="Synchronization time" minute="3" hour="*/2" job="/usr/sbin/ntpdate ntp.ubuntu.com >/dev/null 2>&1 ; /sbin/hwclock --systohc"
+  become: true
+
 - name: Create ~/.ssh directory
   file: path=~/.ssh state=directory mode=0700
 
@@ -74,27 +86,3 @@
     state: present
     reload: yes
   become: true
-
-#静态网络配置,网络特殊需求时配置
-#- name: NetworkManager servie exist
-#  #shell: systemctl stop NetworkManager
-#  stat: path=/usr/lib/systemd/system/NetworkManager.service
-#  register: NetworkManager_service_exist
-#  become: true
-#  #ignore_errors: True
-#
-#- name: Stop NetworkManager service
-#  service:
-#    name: NetworkManager
-#    state: stopped
-#    enabled: no
-#  become: true
-#  #when: NetworkManager_service_exist.rc == 0
-#  when: NetworkManager_service_exist.stat.exists
-#
-#- name: from dhcp to static
-#  template: src=ifcfg-eth0 dest=/etc/sysconfig/network-scripts/ifcfg-{{ service_nic }}
-#  notify:
-#    - restart network
-#  become: true
-#  tags: static-network

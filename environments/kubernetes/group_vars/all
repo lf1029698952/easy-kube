@@ -3,9 +3,6 @@ ansible_ssh_common_args: '-F ./environments/kubernetes/ssh_config'
 # service bind network
 service_nic: eth0
 
-resolv_nameservers:
-    - 192.168.0.1
-
 ############
 # etcd
 ############
@@ -38,15 +35,9 @@ virtual_router_id: 7251
 # api-server 实际成员地址端口
 LB_EP1: 192.168.0.1:6443
 LB_EP2: 192.168.0.2:6443
+LB_EP3: 192.168.0.3:6443
 MASTER_IP: 192.168.7.251
 MASTER_PORT: 8443
-
-
-############
-# zabbix
-############
-# # zabbix server 地址
-zabbix_server: server.zabbix.xxx.com
 
 
 ############
@@ -64,11 +55,3 @@ cidr_network: 10.24.0.0/16
 # flannel
 ############
 flannel_network: 10.24.0.0/16
-
-############
-# docker with thin pool
-############
-# 用来创建pv的磁盘
-#lvm_disk: /dev/xvdb
-# 分配给根分区的磁盘大小，不要设置为0
-#lvm_root_size: 1G

@@ -13,6 +13,7 @@ k8s-master-1
 [kubernetes-master]
 k8s-master-1
 k8s-master-2
+k8s-master-3
 [kubernetes-node]
 k8s-node-1
 k8s-node-2
