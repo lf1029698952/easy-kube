@@ -1,9 +1,8 @@
 ---
 - include: ../facts/common.yml
 - include: ../facts/etcd.yml
-#- include: ../facts/calico.yml
 
-- name: init calico
+- name: init flannel network
   hosts: kubernetes-master-certfile
   roles:
-  - calico
+  - flannel

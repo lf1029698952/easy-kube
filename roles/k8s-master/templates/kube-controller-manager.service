@@ -13,6 +13,7 @@ ExecStart=/usr/bin/kube-controller-manager \
 --cluster-signing-key-file=/etc/kubernetes/ssl/ca-key.pem \
 --service-account-private-key-file=/etc/kubernetes/ssl/ca-key.pem \
 --root-ca-file=/etc/kubernetes/ssl/ca.pem \
+--leader-elect=true \
 --log-dir=/var/log/kubernetes \
 --logtostderr=false \
 --v=2

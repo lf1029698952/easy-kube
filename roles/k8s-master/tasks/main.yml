@@ -1,7 +1,7 @@
 ---
 - name: Install kube-master
   yum:
-    name: kube-master
+    name: kube-master-1.11.4.el7-1
     state: present
   become: true
 
@@ -19,20 +19,14 @@
 
 - name: Update k8s master /var/lib/systemd/system/apiserver service
   template: src=kube-apiserver.service dest=/lib/systemd/system/
-  notify:
-    - restart kube-apiserver
   become: true
 
 - name: Update k8s master /var/lib/systemd/system/kube-controller-manager file
   template: src=kube-controller-manager.service dest=/lib/systemd/system/
-  notify:
-    - restart kube-controller-manager
   become: true
 
 - name: Update k8s master /var/lib/systemd/system/kube-scheduler file
   template: src=kube-scheduler.service dest=/lib/systemd/system/
-  notify:
-    - restart kube-controller-manager
   become: true
 
 - name: reload systemd

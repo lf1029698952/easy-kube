@@ -5,6 +5,7 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 ExecStart=/usr/bin/kube-scheduler \
 --address=127.0.0.1 \
 --master=http://127.0.0.1:8080 \
+--leader-elect=true \
 --log-dir=/var/log/kubernetes \
 --logtostderr=false \
 --v=2

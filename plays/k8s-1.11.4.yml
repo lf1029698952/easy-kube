@@ -2,7 +2,6 @@
 - include: ../books/init-common.yml
 - include: ../books/k8s-certificate.yml
 #- include: ../books/_keepalived.yml
-#- include: ../books/_zabbix.yml
 - include: ../books/etcd.yml
 - include: ../books/k8s-master.yml
 - include: ../books/k8s-node.yml

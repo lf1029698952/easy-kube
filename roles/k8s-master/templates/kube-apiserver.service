@@ -4,17 +4,18 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 After=network.target
 [Service]
 ExecStart=/usr/bin/kube-apiserver \
---admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \
+--enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota \
 --advertise-address={{ host_ip }} \
 --bind-address={{ host_ip }} \
 --insecure-bind-address=127.0.0.1 \
---authorization-mode=RBAC \
---runtime-config=rbac.authorization.k8s.io/v1alpha1 \
+--authorization-mode=Node,RBAC \
+--runtime-config=rbac.authorization.k8s.io/v1 \
 --kubelet-https=true \
---experimental-bootstrap-token-auth \
+--anonymous-auth=false \
+--enable-bootstrap-token-auth \
 --token-auth-file=/etc/kubernetes/token.csv \
 --service-cluster-ip-range=10.254.0.0/16 \
---service-node-port-range=8400-9000 \
+--service-node-port-range=30000-32767 \
 --tls-cert-file=/etc/kubernetes/ssl/kubernetes.pem \
 --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-key.pem \
 --client-ca-file=/etc/kubernetes/ssl/ca.pem \
@@ -25,7 +26,7 @@ ExecStart=/usr/bin/kube-apiserver \
 --etcd-servers={{ etcd_endpoints }} \
 --enable-swagger-ui=true \
 --allow-privileged=true \
---apiserver-count=2 \
+--apiserver-count=3 \
 --audit-log-maxage=30 \
 --audit-log-maxbackup=3 \
 --audit-log-maxsize=100 \
