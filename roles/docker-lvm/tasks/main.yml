@@ -1,0 +1,38 @@
+---
+- name: install Docker 18.06.1
+  yum:
+    name: docker-ce
+    state: present
+  become: true
+
+- name: copy create_docker_thinpool scripts
+  template: src=init-lvm.sh dest=/root
+  become: true
+
+- name: create docker thinpool
+  shell: bash /root/init_lvm.sh
+  ignore_errors: true
+  become: true
+
+- name: change docker service config
+  template: src=docker.service.j2 dest=/lib/systemd/system/docker.service
+  become: true
+
+- name: 创建docker配置目录
+  file: name=/etc/docker state=directory
+  become: true
+
+- name: change docker config
+  template: src=daemon.json dest=/etc/docker/
+  become: true
+
+- name: reload systemctl
+  command: systemctl daemon-reload
+  become: true
+
+- name: start docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  become: true

@@ -1,0 +1,12 @@
+{
+  "storage-driver": "devicemapper",
+  "storage-opts": [
+    "dm.thinpooldev=/dev/mapper/vgpaas-thinpool",
+    "dm.use_deferred_removal=true",
+    "dm.use_deferred_deletion=true"
+  ],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m"
+  }
+}

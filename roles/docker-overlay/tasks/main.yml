@@ -1,5 +1,5 @@
 ---
-- name: install Docker 17.12
+- name: install Docker 18.06.1
   yum:
     name: docker-ce
     state: present
@@ -12,9 +12,6 @@
 
 - name: change docker service config
   template: src=docker.service.j2 dest=/lib/systemd/system/docker.service
-  notify:
-    - reload systemctl
-    - restart docker
   become: true
 
 - name: 创建docker配置目录
@@ -23,9 +20,10 @@
 
 - name: change docker config
   template: src=daemon.json dest=/etc/docker/
-  notify:
-    - reload systemctl
-    - restart docker
+  become: true
+
+- name: reload systemctl
+  command: systemctl daemon-reload
   become: true
 
 - name: start docker service
