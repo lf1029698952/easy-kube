@@ -1,5 +1,9 @@
 ---
 - name: Copy flannel yaml file
+  template: src=flannel-rbac.yml dest=/root/
+  become: true
+
+- name: Copy flannel yaml file
   template: src=flannel-vxlan.yml dest=/root/
   become: true
 
@@ -10,6 +14,6 @@
   become: true
 
 - name: Run flannel
-  command: kubectl create -f /root/flannel-vxlan.yml
+  command: kubectl create -f /root/flannel-rbac.yml && kubectl create -f /root/flannel-rbac.yml
   when: flannel_run_result.stdout == ""
   become: true
