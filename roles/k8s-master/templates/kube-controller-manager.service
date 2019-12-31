@@ -13,6 +13,8 @@ ExecStart=/usr/bin/kube-controller-manager \
 --cluster-signing-key-file=/etc/kubernetes/ssl/ca-key.pem \
 --service-account-private-key-file=/etc/kubernetes/ssl/ca-key.pem \
 --root-ca-file=/etc/kubernetes/ssl/ca.pem \
+--experimental-cluster-signing-duration=87600h0m0s \
+--feature-gates=RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true \
 --leader-elect=true \
 --log-dir=/var/log/kubernetes \
 --logtostderr=false \
