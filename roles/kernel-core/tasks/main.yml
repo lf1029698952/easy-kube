@@ -4,6 +4,11 @@
   template: src=sysctl.conf dest=/etc
   become: true
 
+# modprobe加载内核模块
+- name: modprobe br_netfilter && ip_conntrack
+  shell: modprobe br_netfilter && modprobe ip_conntrack
+  become: true
+
 # sysctl -p 使系统内核参数设置生效
 - name: sysctl -p
   command: sysctl -p
