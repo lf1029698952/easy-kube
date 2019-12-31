@@ -3,6 +3,9 @@
 set -o errexit
 set -o pipefail
 
+#大容量GPT硬盘中，裸硬盘不可以直接用于创建PV，先将该硬盘创建分区，从分区中创建PV
+#fdisk /dev/sdb/ 一路回车,w写入即可
+
 function prepare_system_disk()
 {
 	# get the size from env(come from node install)
@@ -18,7 +21,7 @@ function prepare_system_disk()
 	# find available block devices
 	block_devices=()
 
-	all_devices=$(lsblk -o KNAME,TYPE | grep disk | grep -v nvme | awk '{print $1}' | awk '{ print "/dev/"$1}')
+	all_devices=$(lsblk -o KNAME,TYPE | grep part | grep -v nvme | awk '{print $1}' | awk '{ print "/dev/"$1}')
 
 set +e
 	for device in ${all_devices[@]}; do
@@ -51,7 +54,7 @@ set +e
 #			fi
 			# is used ?
 			match=$(sudo lsblk -n $device 2>/dev/null | grep -v part | wc -l)
-			if [[ ${match} > 0 ]]; then
+			if [[ ${match} > 1 ]]; then
 				# already used
 				echo "Disk ${device} has been used, will skip this device"
 				continue
