@@ -1,0 +1,81 @@
+---
+- name: Install kube-node
+  yum:
+    name: kube-node-1.11.4.el7-1
+    state: present
+  become: true
+
+- name: Update k8s node kubelet.service file`
+  template: src=kubelet.service dest=/lib/systemd/system/
+  become: true
+
+- name: Update k8s node kube-proxy.service file
+  template: src=kube-proxy.service dest=/lib/systemd/system/
+  become: true
+
+- name: Copy k8s kubeconfig to node
+  copy: src=~/ssl/{{ item }} dest=/etc/kubernetes/{{ item }}
+  with_items:
+    - bootstrap.kubeconfig
+    - kube-proxy.kubeconfig
+  become: true
+
+#安装kube-proxy依赖conntrack
+- name: Install conntrack
+  yum:
+    name: conntrack
+    state: present
+  become: true
+
+- name: Install socat
+  yum:
+    name: socat
+    state: present
+  become: true
+
+- name: yum安装 ceph-common
+  yum: name=ceph-common state=latest
+  become: true
+
+- name: 加载 ipvs 内核模块 安装ipvsadm ipset工具
+  template: src=ipvs.modules dest=/etc/sysconfig/modules
+  become: true
+
+- name: Load ipvs modules
+  shell: bash /etc/sysconfig/modules/ipvs.modules
+  ignore_errors: true
+  become: true
+
+- name: Install ipvsadm
+  yum:
+    name: ipvsadm
+    state: present
+  become: true
+
+- name: Install ipset
+  yum:
+    name: ipset
+    state: present
+  become: true
+
+- name: reload systemctl
+  command: systemctl daemon-reload
+  become: true
+
+- name: start kubelet service
+  service:
+    name: kubelet
+    state: started
+    enabled: yes
+  become: true
+
+- name: start kube-proxy service
+  service:
+    name: kube-proxy
+    state: started
+    enabled: yes
+  become: true
+
+- name: iptables forward accept
+  command: iptables -I FORWARD -s 0.0.0.0/0 -j ACCEPT
+  become: true
